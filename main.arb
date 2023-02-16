@@ -101,6 +101,17 @@ module TicTacToeModule
       puts "Ohh..., it's a TIE, try again"
     end
   end
-
-  
 end
+
+class TicTacToe
+  include TicTacToeModule
+
+  def paly(board)
+    until game_over?(board)
+      display_board(board)
+      turn(board)
+    end
+    winner(board)
+  end
+end
+
