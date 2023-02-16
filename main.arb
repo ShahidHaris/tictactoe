@@ -1,0 +1,106 @@
+module TicTacToeModule
+  WIN_CHANCE = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6],
+    [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
+  ]
+
+  protected
+  def display_board(board)
+    puts " #{board[0]} | #{board[1]} | #{board[2]} "
+    puts '-----------'
+    puts " #{board[3]} | #{board[4]} | #{board[5]} "
+    puts '-----------'
+    puts " #{board[6]} | #{board[7]} | #{board[8]} "
+  end
+
+  def convert_to_integer(input)
+    input.to_i - 1
+  end
+
+  def square_taken?(board, input)
+    board[input].empty?
+  end
+
+  def move_valid?(board, input)
+    input.between?(0, 8) && square_taken?(board, input) ? true : false
+  end
+
+  def move(board, input, player = 'X')
+    board[input] = player
+  end
+
+  def squares_occupied(board)
+    counter = 0
+    board.each do |entry|
+      counter += 1 if entry.include?('X') || entry.include?('O')
+    end
+    counter
+  end
+
+  def current_player(board)
+    (squares_occupied(board) % 2).zero? ? 'X' : 'O'
+  end
+
+  def turn(board)
+    puts 'Choose a number between 1 to 9 for the squares'
+    input = gets.chomp
+    index = convert_to_integer(input)
+    if move_valid?(board, index)
+      move(board, index, current_player(board))
+    else
+      turn(board)
+    end
+    board
+  end
+
+  def game_won?(board)
+    value = nil
+    WIN_CHANCE.each do |chance|
+      index_1 = chance[0]
+      index_2 = chance[1]
+      index_3 = chance[2]
+
+      position_1 = board[index_1]
+      position_2 = board[index_2]
+      position_3 = board[index_3]
+
+      value = position_1 == position_2 && position_2 == position_3 && !square_taken?(board, index_1)
+      break if value == true
+    end
+    value
+  end
+
+  def board_full?(board)
+    board.all? {|i| i == 'X' || i == 'O'}
+  end
+
+  def game_draw?(board)
+    if !game_won?(board) && board_full?(board)
+      true
+    elsif !game_won?(board) && !board_full?(board)
+      false
+    elsif game_won?(board)
+      false
+    end
+  end
+
+  def game_over?(board)
+    if game_won?(board) || board_full?(board) || game_draw?(board)
+      true
+    else
+      false
+    end
+  end
+
+  def winner(board)
+    if game_won?(board) && board.count('X') > board.count('O')
+      puts "It's 'X' !!! The winner, CONGRATULATIONS"
+    elsif game_won?(board) && board.count('X') == board.count('O')
+      puts "It's 'O' !!! The winner, CONGRATULATIONS"
+    else
+      puts "Ohh..., it's a TIE, try again"
+    end
+  end
+
+  
+end
